@@ -6,7 +6,6 @@ import CSSTranslate from '../CSSTranslate';
 import Swipe from 'react-easy-swipe';
 import Thumbs from './Thumbs';
 import * as customPropTypes from '../customPropTypes';
-import ReactImageZoom from 'react-image-zoom';
 
 const noop = () => {};
 
@@ -462,14 +461,14 @@ class Carousel extends Component {
         const selectedItem = this.props.selectedItem;
         const item = this.itemsRef[selectedItem];
         const images = item && this.props.images;
-        return images && <ReactImageZoom {...this.props.zoom} img={images[selectedItem]}/>;
+        return images && <img src={images[selectedItem]}/>;
     }
 
     getVariableImageHeight = (position) => {
         const item = this.itemsRef[position];
         const images = item && this.props.images;
         if (this.state.hasMount && images.length > 0) {
-            const image = <ReactImageZoom {...this.props.zoom} img={images[0]} />;
+            const image = <img src={images[0]}/>;
 
             if (!image.complete) {
                 // if the image is still loading, the size won't be available so we trigger a new render after it's done
