@@ -6,6 +6,7 @@ import CSSTranslate from '../CSSTranslate';
 import Swipe from 'react-easy-swipe';
 import Thumbs from './Thumbs';
 import * as customPropTypes from '../customPropTypes';
+import ReactImageZoom from 'react-image-zoom';
 
 const noop = () => {};
 
@@ -45,30 +46,31 @@ class Carousel extends Component {
     };
 
     static defaultProps = {
-        showIndicators: true,
-        showArrows: true,
-        showStatus:true,
+        showIndicators: false,
+        showArrows: false,
+        showStatus:false,
         showThumbs:true,
         infiniteLoop: false,
         selectedItem: 0,
         axis: 'horizontal',
         verticalSwipe: 'standard',
         width: '100%',
-        useKeyboardArrows: false,
-        autoPlay: false,
+        useKeyboardArrows: true,
+        autoPlay: true,
         stopOnHover: true,
         interval: 3000,
         transitionTime: 350,
         swipeScrollTolerance: 5,
         swipeable: true,
         dynamicHeight: false,
-        emulateTouch: false,
+        emulateTouch: true,
         onClickItem: noop,
         onClickThumb: noop,
         onChange: noop,
         statusFormatter: defaultStatusFormatter,
         centerMode: false,
-        centerSlidePercentage: 80
+        centerSlidePercentage: 80,
+        images: []
     };
 
     constructor(props) {
@@ -80,6 +82,10 @@ class Carousel extends Component {
             hasMount: false,
             isMouseEntered: false
         };
+
+        for (var i = 1; i < 4; i++) {
+            this.props.images.push("http://res.cloudinary.com/at0mz/image/upload/v1523989195/man/" + i + ".jpg");
+        }
     }
 
     componentDidMount () {
@@ -455,15 +461,15 @@ class Carousel extends Component {
     getInitialImage = () => {
         const selectedItem = this.props.selectedItem;
         const item = this.itemsRef[selectedItem];
-        const images = item && item.getElementsByTagName('img');
-        return images && images[selectedItem];
+        const images = item && this.props.images;
+        return images && <ReactImageZoom {...this.props.zoom} img={images[selectedItem]}/>;
     }
 
     getVariableImageHeight = (position) => {
         const item = this.itemsRef[position];
-        const images = item && item.getElementsByTagName('img');
+        const images = item && this.props.images;
         if (this.state.hasMount && images.length > 0) {
-            const image = images[0];
+            const image = <ReactImageZoom {...this.props.zoom} img={images[0]} />;
 
             if (!image.complete) {
                 // if the image is still loading, the size won't be available so we trigger a new render after it's done
@@ -635,7 +641,6 @@ class Carousel extends Component {
                         }
                     </div>
                     <button type="button" className={klass.ARROW_NEXT(!hasNext)} onClick={this.increment} />
-
                     { this.renderControls() }
                     { this.renderStatus() }
                 </div>
